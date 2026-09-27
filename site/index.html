@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luraph Deobfuscator</title>
+<meta name="description" content="Paste a Luraph v15 protected Luau script and get readable, devirtualized code back. Runs entirely in your browser.">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <span class="logo" aria-hidden="true">{ }</span>
+    <div>
+      <h1>Luraph v15 Deobfuscator</h1>
+      <p class="sub">Paste a protected script, get readable Luau back. Everything runs in your browser; your script is never uploaded.</p>
+    </div>
+  </div>
+  <div class="engine" id="engine" data-state="loading">
+    <span class="dot"></span><span id="engineText">Starting engine…</span>
+  </div>
+</header>
+
+<main class="grid">
+  <section class="panel" aria-labelledby="inTitle">
+    <div class="panel-head">
+      <h2 id="inTitle">Obfuscated script</h2>
+      <div class="actions">
+        <button type="button" class="ghost" id="btnSample" title="Load the Luraph v15 sample script">Sample</button>
+        <label class="ghost button" title="Open a .lua / .luau / .txt file">
+          Open file<input type="file" id="fileInput" accept=".lua,.luau,.txt,text/plain" hidden>
+        </label>
+        <button type="button" class="ghost" id="btnClear">Clear</button>
+      </div>
+    </div>
+    <textarea id="input" spellcheck="false" autocomplete="off" placeholder="-- This file was protected using Luraph Obfuscator v15.0 [https://lura.ph/]&#10;return setmetatable({ ... })&#10;&#10;Paste your script here, or drop a file."></textarea>
+    <div class="meta" id="inMeta">0 bytes</div>
+
+    <div class="options">
+      <fieldset class="seg">
+        <legend>Mode</legend>
+        <label><input type="radio" name="mode" value="full" checked><span>Full <small>devirtualize</small></span></label>
+        <label><input type="radio" name="mode" value="trace"><span>Fast <small>trace only</small></span></label>
+      </fieldset>
+      <label class="field">
+        <span>Obfuscator</span>
+        <select id="obfuscator">
+          <option value="">Auto-detect</option>
+          <option value="luraph_v15">Luraph v15</option>
+          <option value="ironbrew1">IronBrew 1</option>
+          <option value="generic">Other (trace)</option>
+        </select>
+      </label>
+      <label class="field small">
+        <span>Timeout (s)</span>
+        <input type="number" id="timeout" min="10" max="1800" step="10" value="90">
+      </label>
+    </div>
+    <details class="adv">
+      <summary>Advanced options</summary>
+      <label class="field wide">
+        <span>Extra command-line arguments for <code>deob.py</code></span>
+        <input type="text" id="extra" spellcheck="false" placeholder="--cfg &quot;prelude=rawset(G,'webhook','x')&quot;  --devirt-rounds 4">
+      </label>
+      <p class="hint">Scripts that stop early because they expect settings in <code>getgenv()</code> can be driven further with <code>--cfg "prelude=..."</code> (Luau run before the script) and <code>--cfg falsy=name1,name2</code>.</p>
+    </details>
+
+    <div class="run-row">
+      <button type="button" class="primary" id="btnRun" disabled>Deobfuscate</button>
+      <button type="button" class="ghost danger" id="btnCancel" hidden>Cancel</button>
+      <span class="status" id="status" role="status" aria-live="polite"></span>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="outTitle">
+    <div class="panel-head">
+      <h2 id="outTitle">Deobfuscated output</h2>
+      <div class="actions">
+        <button type="button" class="ghost" id="btnCopy" disabled>Copy</button>
+        <button type="button" class="ghost" id="btnDownload" disabled>Download</button>
+      </div>
+    </div>
+    <textarea id="output" spellcheck="false" readonly placeholder="The readable script appears here."></textarea>
+    <div class="meta" id="outMeta"></div>
+    <details class="log" id="logBox">
+      <summary>Log <span class="count" id="logCount"></span></summary>
+      <pre id="log"></pre>
+    </details>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Dynamic deobfuscator: the script runs inside a sandboxed Luau VM (WebAssembly) against a fake Roblox environment, and its VM bytecode is lifted back to Luau. It has no network access. Big scripts can take several minutes.</p>
+</footer>
+
+<div class="drop" id="drop" hidden><div>Drop the script file</div></div>
+
+<script src="app.js"></script>
+</body>
+</html>

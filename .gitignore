@@ -1,0 +1,6 @@
+__pycache__/
+site/deobf.zip
+build/.luau/
+Deobfuscator/deobf/bin/luau
+Deobfuscator/deobf/bin/luau-ast
+Deobfuscator/samples/output/*.deobf.luau
